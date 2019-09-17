@@ -38,12 +38,23 @@ public class WebSecurity  extends WebSecurityConfigurerAdapter{
 			.anyRequest()
 			.authenticated()
 			.and()
-			.addFilter(new AuthenticationFilter(authenticationManager()));//Voir la classe AuthenticationFilter
+			.addFilter((getAuthenticationFilter()));//Voir la classe AuthenticationFilter
 			
 	}
 	
 	
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+	}
+	
+	
+	// méthode pour customiser l'url d'entrée de l'appli afin de ne pas avoir l'url par défaut de spring
+	public AuthenticationFilter getAuthenticationFilter() throws Exception {
+		
+		final AuthenticationFilter filter = new AuthenticationFilter(authenticationManager());
+		
+		filter.setFilterProcessesUrl("/users/login");
+		
+		return filter;
 	}
 }
