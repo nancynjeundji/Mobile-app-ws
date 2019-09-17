@@ -5,6 +5,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -38,8 +39,13 @@ public class WebSecurity  extends WebSecurityConfigurerAdapter{
 			.anyRequest()
 			.authenticated()
 			.and()
-			.addFilter((getAuthenticationFilter())) //Voir la classe AuthenticationFilter
-			.addFilter(new AuthorizationFilter(authenticationManager())) //Voir la classe AuthorizationFilter
+			//Voir la classe AuthenticationFilter
+			.addFilter((getAuthenticationFilter()))
+			//Voir la classe AuthorizationFilter
+			.addFilter(new AuthorizationFilter(authenticationManager())) 
+			//rendre l'API Stateless afin que le header ne soit pas dans le cache
+			.sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			;
 			
 	}
