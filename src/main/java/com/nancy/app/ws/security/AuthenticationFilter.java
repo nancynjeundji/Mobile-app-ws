@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -18,6 +17,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nancy.app.ws.SpringApplicationContext;
+import com.nancy.app.ws.service.UserService;
+import com.nancy.app.ws.shared.dto.UserDto;
 import com.nancy.app.ws.ui.model.request.UserLoginRequestModel;
 
 import io.jsonwebtoken.Jwts;
@@ -72,15 +74,23 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 											FilterChain chain,
 											Authentication auth) throws IOException, ServletException{
 		
-		String userName = ((User) auth.getPrincipal()).getUsername();
+		String userName = ((User) auth.getPrincipal()).getUsername();// le userName c'est le login, dans cette appli il s'agit de l'email
 		
+		//construction du token
 		String token = Jwts.builder()
 						.setSubject(userName)
 						.setExpiration( new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
 						.signWith(SignatureAlgorithm.HS512, SecurityConstants.TOKEN_SECRET)
 						.compact();
 		
+		//récupération de l'ID de l'user
+		UserService userService = (UserService)SpringApplicationContext.getBean("userServiceImpl");
+		
+		UserDto userDto = userService.getUser(userName);
+		
+		// configuration du header de la réponse
 		res.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);
+		res.addHeader("UserID", userDto.getUserId());
 	}
 
 }
