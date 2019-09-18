@@ -8,8 +8,10 @@ import com.nancy.app.ws.io.entity.UserEntity;
 @Repository
 public interface UserRepository extends CrudRepository<UserEntity, Long> {
 	
-	//UserEntity findUSerByEmail(String email);
-	
 	UserEntity findByEmail(String email);
+	
+	UserEntity findByUserId(String userId);
+	
+	
 
 }
