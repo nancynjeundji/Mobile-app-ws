@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.nancy.app.ws.security.AppProperties;
+
 @SpringBootApplication
 public class MobileAppWsApplication {
 
@@ -24,4 +26,8 @@ public class MobileAppWsApplication {
 		return new SpringApplicationContext();
 	}
 	
+	@Bean(name="AppProperties")
+	public AppProperties appProperties() {
+		return new AppProperties();
+	}
 }
